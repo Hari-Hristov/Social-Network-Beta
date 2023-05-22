@@ -10,9 +10,15 @@ class Post
 
 	public:
 		Post() = default;
-		Post(MyString title, MyString desc);
+		Post(const MyString& title, const MyString& desc);
+		
 		MyString getTitle() const; //tuka ms s & li tr da e?
+		MyString getDesc() const;
 		unsigned getId() const;
 		void comment(Comment& comment);
+
+		void print();
 };
+
+bool operator==(const Post& lhs, const Post& rhs);
 

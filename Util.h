@@ -6,8 +6,8 @@ namespace commandVariables
 {
 	const int MODES_COUNT = 3;
 	const int TEXT_COMMANDS = 1;
-	const int GENERAL_COMMANDS = 1;
-	const int TOPIC_COMMANDS = 5;
+	const int GENERAL_COMMANDS = 2;
+	const int TOPIC_COMMANDS = 4;
 	const int POST_COMMNADS = 6;
 
 	static const MyString MODES[MODES_COUNT] =
@@ -20,14 +20,14 @@ namespace commandVariables
 		"search"
 	};
 
-	static const MyString generalFuncs[GENERAL_COMMANDS] =
+	static const MyString GENERAL_FUNCS[GENERAL_COMMANDS] =
 	{
-		"open"
+		"open", "about"
 	};
-	static const MyString topicFuncs[TOPIC_COMMANDS] = {
-		"post", "about", "p_open", "quit"
+	static const MyString TOPIC_FUNCS[TOPIC_COMMANDS] = {
+		"post", "p_open", "quit"
 	};
-	static const MyString postFuncs[POST_COMMNADS] = {
+	static const MyString POST_FUNCS[POST_COMMNADS] = {
 		"comment", "comments", "reply", "upvote", "downvote", "p_close"
 	};
 }
