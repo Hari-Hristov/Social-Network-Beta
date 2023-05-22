@@ -196,8 +196,8 @@ void MyString::clear()
 
 bool MyString::contains(const MyString& other)
 {
-	int n = this->length();
-	int m = other.length();
+	size_t n = this->length();
+	size_t m = other.length();
 
 	for (int i = 0; i <= n - m; ++i) {
 		int j = 0;

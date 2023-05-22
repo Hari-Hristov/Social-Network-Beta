@@ -8,7 +8,7 @@ int main()
 	MyString test = "zdr";
 	MyString input;
 	Vector<Topic> topics;
-	Topic currentTopic;
+	Topic* currentTopic = nullptr;
 	
 	topics.pushBack(Topic("guza mi brat", "petur", "abc"));
 	topics.pushBack(Topic("dupeto mi brat", "petur", "abc"));
@@ -29,15 +29,15 @@ int main()
 
 		if (v.getSize() == 0)
 		{
-			std::cout << "Please enter a command.";
 			throw std::invalid_argument("Please enter a command.");
 		}
 
 		MyString command = v[0];
+		size_t size = v.getSize();
 
 		if (mode == "general")
 		{
-			if (!contains(commandVariables::TEXT_FUNCS, commandVariables::TEXT_COMMANDS, command) &&	  !contains(commandVariables::generalFuncs, commandVariables::GENERAL_COMMANDS, command))
+			if (!contains(commandVariables::TEXT_FUNCS, commandVariables::TEXT_COMMANDS, command) &&	  !contains(commandVariables::GENERAL_FUNCS, commandVariables::GENERAL_COMMANDS, command))
 			{
 				std::cout << "Unavaliable command in the current mode - " << mode << std::endl;
 				continue;
@@ -46,7 +46,7 @@ int main()
 			//search
 			if (command == "search")
 			{
-				size_t size = v.getSize();
+				
 				if (size == 1)
 				{
 					throw std::invalid_argument("Please enter a text to search.");
@@ -79,7 +79,7 @@ int main()
 			}
 
 			//open
-			if (command == "open")
+			else if (command == "open")
 			{
 				size_t size = v.getSize();
 
@@ -97,7 +97,7 @@ int main()
 					{
 						if (topics[i].getId() == searchedId)
 						{
-							currentTopic = topics[i];
+							currentTopic = &topics[i];
 							found = true;
 							mode = "topic";
 							break;
@@ -107,6 +107,10 @@ int main()
 					{
 						std::cout << "invalid id." << std::endl;
 						//throw std::out_of_range("There is no topic found with this id.");
+					}
+					else
+					{
+						std::cout << "Successfully opened the topic." << std::endl;
 					}
 				}
 				else
@@ -120,60 +124,86 @@ int main()
 					{
 						if (topics[i].getTitle() == title)
 						{
-							currentTopic = topics[i];
+							currentTopic = &topics[i];
 							found = true;
 							mode = "topic";
 							break;
 						}
+					}
 
-						if (!found)
-						{
-							std::cout << "invalid title." << std::endl;
-							//throw std::out_of_range("There is no topic found with this title.");
-						}
+					if (!found)
+					{
+						std::cout << "invalid title." << std::endl;
+						//throw std::out_of_range("There is no topic found with this title.");
 					}
 				}
 			}
+
+			//about
+			else
+			{
+				if (size != 2 || !isPositiveNumber(v[1]))
+					throw std::bad_cast(); // cout smth when you catch it
+
+				unsigned searchedId = v[1].toUnsigned();
+				bool found = false;
+
+				for (size_t i = 0; i < topics.getSize(); i++)
+				{
+					if (topics[i].getId() == searchedId)
+					{
+						topics[i].print();
+						found = true;
+						break;
+					}
+				}
+
+				if (!found)
+					throw std::invalid_argument("Cannot show information on this topic because it does not exit.");
+			}
 		}
+
 		else if (mode == "topic")
 		{
+			if (!contains(commandVariables::TOPIC_FUNCS, commandVariables::TOPIC_COMMANDS, command))
+			{
+				std::cout << "Unavaliable command in the current mode - " << mode << std::endl;
+				continue;
+			}
 
-			std::cout << "Veche si v topic" << std::endl;
+			if (command == "post")
+			{
+				if (size != 1)
+					throw std::invalid_argument("Do not add anything after the post command.");
+
+				MyString title = "";
+				MyString desc = "";
+				std::cout << "What will be your post's title: ";
+				char buffTitle[1024];
+				std::cin.getline(buffTitle, 1024);
+				title = buffTitle;
+				std::cout << "What do you want to post(maximum number charecters is 1024): ";
+				char buffDesc[1024];
+				std::cin.getline(buffDesc, 1024);
+				desc = buffDesc;
+
+				Post toAdd = Post(title, desc);
+				currentTopic->post(toAdd);
+
+			}
+			else if (command == "p_open")
+			{
+				//vliza v post mode pri validen p_open command
+			}
+			else //quit
+			{
+				mode = "general";
+				std::cout << "Successfully exited the topic." << std::endl;
+			}
 		}
 		else if (mode == "post")
 		{
 			std::cout << "Veche si vuv post" << std::endl;
-		}
-
-		//search is implemented !
-
-
-		if (v.getSize() > 2 || v.getSize() == 0)
-		{
-			std::cout << "greshka";
-			throw std::invalid_argument("Not a valid command.");
-		}
-
-
-		if (contains(commandVariables::generalFuncs,
-			commandVariables::GENERAL_COMMANDS, command))
-		{
-
-		}
-		else if (contains(commandVariables::postFuncs,
-			commandVariables::POST_COMMNADS, command))
-		{
-
-		}
-		else if (contains(commandVariables::topicFuncs,
-			commandVariables::TOPIC_COMMANDS, command))
-		{
-
-		}
-		else
-		{
-			std::cout << "nqq takava komanda" << std::endl;
-			//throw std::invalid_argument("Invalid command.");
 		}
 	}
 }
