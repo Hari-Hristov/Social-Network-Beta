@@ -3,7 +3,7 @@
 unsigned Topic::idCounter = 0;
 
 Topic::Topic(const MyString& title, const MyString& creatorName, const MyString& description)
-	: title(title), creatorName(creatorName), description(description)
+	: title(title), authorName(creatorName), description(description)
 {
 	id = idCounter++;
 }
@@ -13,7 +13,7 @@ unsigned Topic::getId() const
 	return id;
 }
 
-MyString Topic::getTitle() const
+const MyString& Topic::getTitle() const
 {
 	return title;
 }
@@ -25,33 +25,12 @@ bool Topic::containsTextInTitle(const MyString& text)
 }
 
 
-void Topic::post(const Post& post)
+void Topic::post(const MyString& title, const MyString& desc)
 {
-	if (containsPost(post))
-		throw std::invalid_argument("This is already a post like this in the topic.");
-
-	posts.pushBack(post);
-}
-
-void Topic::post(Post&& post)
-{
-	if (containsPost(post))
-		throw std::invalid_argument("This is already a post like this in the topic.");
-
-	posts.pushBack(post);
+	posts.pushBack(Post(title, desc, postId++));
 }
 
 bool Topic::containsPost(const Post& post)
-{
-	for (size_t i = 0; i < posts.getSize(); i++)
-	{
-		if (posts[i] == post)
-			return true;
-	}
-
-	return false;
-}
-bool Topic::containsPost(Post&& post)
 {
 	for (size_t i = 0; i < posts.getSize(); i++)
 	{
@@ -74,7 +53,7 @@ void Topic::list()
 void Topic::print()
 {
 	std::cout << "Name: " << title << std::endl
-		<< "Creator: " << creatorName << std::endl
+		<< "Creator: " << authorName << std::endl
 		<< "Description: " << description << std::endl
 		<< "Id: " << id << std::endl << std::endl;
 	//posts

@@ -6,16 +6,18 @@ class Post
 	MyString title = "";
 	MyString desc = "";
 	unsigned id = 0;
+	unsigned commentId = 0;
 	Vector<Comment> comments;
 
 	public:
 		Post() = default;
-		Post(const MyString& title, const MyString& desc);
+		Post(const MyString& title, const MyString& desc, const unsigned id);
 		
-		MyString getTitle() const; //tuka ms s & li tr da e?
-		MyString getDesc() const;
+		const MyString& getTitle() const;
+		const MyString& getDesc() const;
 		unsigned getId() const;
-		void comment(Comment& comment);
+		void comment(const MyString& authorName, const MyString& text);
+		void showComments();
 
 		void print();
 };
