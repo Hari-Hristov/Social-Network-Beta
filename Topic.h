@@ -5,25 +5,25 @@ class Topic
 {
 	static unsigned idCounter;
 	MyString title = "";
-	MyString creatorName = "";
+	MyString authorName = "";
 	MyString description = "";
 	unsigned id = 0;
-	Vector<Post> posts;
+	unsigned postId = 0;
 
 	bool containsPost(const Post& post);
-	bool containsPost(Post&& post);
 
 	public:
-		Topic() = default;
-		Topic(const MyString& title, const MyString& creatorName, const MyString &description); //tuka po & li tr da sa
 
-		void post(const Post& post);
-		void post(Post&& post);
+		Topic() = default;
+		Topic(const MyString& title, const MyString& authorName, const MyString &description); 
+
+		Vector<Post> posts;
+		void post(const MyString& title, const MyString& desc);
 		void list();
 		bool containsTextInTitle(const MyString& text);
 		void print();
 
-		MyString getTitle() const; //po kopie li tr da e
+		const MyString& getTitle() const;
 		unsigned getId() const;
 };
 

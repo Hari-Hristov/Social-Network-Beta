@@ -12,8 +12,10 @@ class Comment
 
 	public:
 		Comment() = default;
-		Comment(MyString authorName, MyString text);
+		Comment(const MyString& authorName, const MyString& text, const unsigned id);
 		
+
 		int getScore() const; //done
+		void print();
 };
 

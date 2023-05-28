@@ -1,23 +1,23 @@
 #include "Post.h"
 
 
-Post::Post(const MyString& title, const MyString& desc)
-	:title(title), desc(desc)
+Post::Post(const MyString& title, const MyString& desc, const unsigned id)
+	:title(title), desc(desc), id(id)
 {
-	//id
 };
 
-void Post::comment(Comment& comment)
+void Post::comment(const MyString& authorName, const MyString& text)
 {
-	comments.pushBack(comment);
+	
+	comments.pushBack(Comment(authorName, text, commentId++));
 };
 
-MyString Post::getTitle() const
+const MyString& Post::getTitle() const
 {
 	return this->title;
 };
 
-MyString Post::getDesc() const
+const MyString& Post::getDesc() const
 {
 	return desc;
 }
@@ -37,4 +37,13 @@ void Post::print()
 	std::cout << "Title is: " << title << std::endl
 			  << "Description is: " << desc << std::endl
 			  << "With id: " << id << std::endl;
+}
+
+void Post::showComments()
+{
+	for (size_t i = 0; i < comments.getSize(); i++)
+	{
+		comments[i].print();
+		std::cout << std::endl;
+	}
 }

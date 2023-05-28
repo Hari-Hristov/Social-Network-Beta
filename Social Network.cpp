@@ -9,6 +9,7 @@ int main()
 	MyString input;
 	Vector<Topic> topics;
 	Topic* currentTopic = nullptr;
+	Post* currentPost = nullptr;
 	
 	topics.pushBack(Topic("guza mi brat", "petur", "abc"));
 	topics.pushBack(Topic("dupeto mi brat", "petur", "abc"));
@@ -43,8 +44,25 @@ int main()
 				continue;
 			}
 
+			//create
+			if (command == "create")
+			{
+				std::cout << "Enter you topic's title: ";
+				MyString title;
+				char buffTitle[1024];
+				std::cin.getline(buffTitle, 1024);
+				title = buffTitle;
+
+				std::cout << "Enter your topic's desc: ";
+				MyString desc;
+				char buffDesc[1024];
+				std::cin.getline(buffDesc, 1024);
+				desc = buffDesc;
+
+				topics.pushBack(Topic(title, "Petur", desc));
+			}
 			//search
-			if (command == "search")
+			else if (command == "search")
 			{
 				
 				if (size == 1)
@@ -110,7 +128,7 @@ int main()
 					}
 					else
 					{
-						std::cout << "Successfully opened the topic." << std::endl;
+						std::cout << "Successfully opened the topic: " << currentTopic->getTitle() << std::endl;
 					}
 				}
 				else
@@ -135,6 +153,10 @@ int main()
 					{
 						std::cout << "invalid title." << std::endl;
 						//throw std::out_of_range("There is no topic found with this title.");
+					}
+					else
+					{
+						std::cout<< "Successfully opened the topic: " << currentTopic->getTitle() << std::endl;
 					}
 				}
 			}
@@ -171,6 +193,7 @@ int main()
 				continue;
 			}
 
+			//open
 			if (command == "post")
 			{
 				if (size != 1)
@@ -186,24 +209,130 @@ int main()
 				char buffDesc[1024];
 				std::cin.getline(buffDesc, 1024);
 				desc = buffDesc;
-
-				Post toAdd = Post(title, desc);
-				currentTopic->post(toAdd);
+;
+				currentTopic->post(title, desc);
 
 			}
+			//p_open
 			else if (command == "p_open")
 			{
-				//vliza v post mode pri validen p_open command
+				if (size == 1) {
+					std::cout << "Command in p_open is too short" << std::endl;
+					continue;
+					//throw std::length_error("Command [p_open] requires id or title.");
+				}
+					
+
+				if (size == 2 && isPositiveNumber(v[1]))
+				{
+					unsigned postId = v[1].toUnsigned();
+					bool found = false;
+
+					for (size_t i = 0; i < currentTopic->posts.getSize(); i++)
+					{
+						if (postId == currentTopic->posts[i].getId())
+						{
+							found = true;
+							mode = "post";
+							currentPost = &currentTopic->posts[i];
+							break;
+						}
+					}
+
+					if (!found)
+					{
+						throw std::invalid_argument("There is no post found with this id.");
+						//no match found with this id (more generalized, for the namespace with the errors
+					}
+					else
+					{
+						std::cout<< "Successfully opened the post." << std::endl;
+					}
+				}
+				else
+				{
+					MyString postTitle = "";
+					addText(postTitle, v, size);
+
+					bool foundTopic = false;
+
+					for (size_t i = 0; i < currentTopic->posts.getSize(); i++)
+					{
+						if (currentTopic->posts[i].getTitle() == postTitle)
+						{
+							foundTopic = true;
+							currentPost = &currentTopic->posts[i];
+							mode = "post";
+							break;
+						}
+					}
+
+					if (!foundTopic)
+					{
+						std::cout << "There is no post with this title in the current topic." << std::endl;
+						//throw std::invalid_argument("There is no post with this title in the current topic.");
+					}
+					else
+					{
+						std::cout << "Successfully opened the post." << std::endl;
+					}
+				}
 			}
-			else //quit
+			//quit
+			else
 			{
+				if (size != 1)
+					throw std::invalid_argument("Do not add anything after the comment command.");
+
 				mode = "general";
 				std::cout << "Successfully exited the topic." << std::endl;
 			}
 		}
 		else if (mode == "post")
 		{
-			std::cout << "Veche si vuv post" << std::endl;
+			if (!contains(commandVariables::POST_FUNCS, commandVariables::POST_COMMNADS, command))
+			{
+				std::cout << "Unavaliable command in the current mode - " << mode << std::endl;
+				continue;
+			}
+
+			//comment
+			if (command == "comment")
+			{
+				if (size != 1)
+					throw std::invalid_argument("Do not add anything after the comment command.");
+
+				MyString text = "";
+				std::cout << "Write what's on your mind: ";
+				char buffText[1024];
+				std::cin.getline(buffText, 1024);
+				text = buffText;
+
+				currentPost->comment("Petur", text);
+			}
+
+			//comments
+			else if (command == "comments")
+			{
+				if (size != 1)
+					throw std::invalid_argument("Do not add anything after the comments command.");
+
+				currentPost->showComments();
+			}
+
+			else if (command == "reply")
+			{
+
+			}
+			//p_close
+			else
+			{
+				if (size != 1)
+					throw std::invalid_argument("Do not add anything after the comment command.");
+
+				mode = "topic";
+				std::cout << "Successfully exited the post." << std::endl;
+			}
 		}
 	}
 }
