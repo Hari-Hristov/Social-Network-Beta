@@ -31,6 +31,7 @@ public:
 	bool empty() const;
 	void clear();
 	void swap(const Vector<T>&);
+	bool contains(const T&);
 private:
 	void copy(const Vector&);
 	void free();
@@ -237,4 +238,16 @@ void Vector<T>::resize(const size_t expectedCapacityToFit) {
 
 	delete[] data;
 	data = temp;
+}
+
+template <typename T>
+bool Vector<T>::contains(const T& el)
+{
+	for (size_t i = 0; i < size; i++)
+	{
+		if (data[i] == el)
+			return true;
+	}
+
+	return false;
 }
