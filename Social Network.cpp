@@ -1,4 +1,5 @@
 #include "Topic.h"
+#include "User.h"
 #include "Util.h"
 #include <stdexcept>
 
@@ -8,11 +9,18 @@ int main()
 	MyString test = "zdr";
 	MyString input;
 	Vector<Topic> topics;
+	Vector<User> users;
+	//users.pushBack(User("Petur", "Petrov", "123"));
+
+	User* currentUser = nullptr;
 	Topic* currentTopic = nullptr;
 	Post* currentPost = nullptr;
-	
+	Comment* currentComment = nullptr;
+
 	topics.pushBack(Topic("guza mi brat", "petur", "abc"));
 	topics.pushBack(Topic("dupeto mi brat", "petur", "abc"));
+
+
 	while (true) //change v to something meaningful
 	{
 		char buff[1024];
@@ -35,10 +43,108 @@ int main()
 
 		MyString command = v[0];
 		size_t size = v.getSize();
+		// ---------- ako ne ostane vreme za guest i user funcii prosto sloji edin if dali command == login ili register ako currentUser == nullptr
+
+		//user commands
+		if (contains(commandVariables::USER_FUNCS, commandVariables::USER_COMMANDS, command))
+		{
+			if (size != 1)
+			{
+				//throw std::invalid_argument("Incorrent user command.");
+				std::cout << "Incorrect user command." << std::endl;
+				continue;
+			}
+
+			//whoami
+			if (command == "whoami")
+			{
+				if (currentUser)
+				{
+					currentUser->whoami();
+				}
+				else {
+					//throw std::invalid_argument("There is no logged in user currently");
+					std::cout << "There is no logged in user currently"<<std::endl;
+				}
+			}
+
+			//logout
+			else if (command == "logout")
+			{
+				if (currentUser)
+				{
+					currentUser = nullptr;
+					std::cout << "Successfully logged out of the account." << std::endl;
+				}
+				else
+					std::cout << "Logout not successfull. You are currently not logged in." << std::endl;
+			}
+
+			//register & login - nai dobre gi otdeli che == trqbva da sa im razlichni
+			else
+			{
+				if (currentUser)
+				{
+					//throw here
+					std::cout << "There is already a logged in user." << std::endl;
+					continue;
+				}
+				MyString firstName = "";
+				std::cout << "Enter your first name: ";
+				readWord(firstName);
+
+				MyString lastName = "";
+				std::cout << "Enter your last name: ";
+				readWord(lastName);
+
+				MyString password = "";
+				std::cout << "Enter your password: ";
+				readWord(password);
+
+				User newUser = User(firstName, lastName, password);
+
+				if (command == "login")
+				{
+					if (currentUser)
+					{
+						std::cout << "There is already a logged in user. Please logout first to log into another profile." << std::endl;
+						continue;
+					}
+
+					for (size_t i = 0; i < users.getSize(); i++)
+					{
+						if (users[i] == newUser)
+							currentUser = &users[i];
+					}
+
+					if (!currentUser)
+						std::cout << "Login was not successfull. There is no such user.";
+					else
+						std::cout << "Login was successfull." << std::endl;
+				}
+				else
+				{
+					for (size_t i = 0; i < users.getSize(); i++)
+					{
+						if (users[i].getFirstName() == firstName && users[i].getLastName() == lastName)
+						{
+							std::cout << "There is already a user with this names." << std::endl;
+							break;
+						}
+					}
+
+					users.pushBack(newUser);
+					currentUser = &users[users.getSize() - 1];
+					std::cout << "Successfully registered!" << std::endl;
+				}
+			}
+			continue;
+		}
+
 
 		if (mode == "general")
 		{
-			if (!contains(commandVariables::TEXT_FUNCS, commandVariables::TEXT_COMMANDS, command) &&	  !contains(commandVariables::GENERAL_FUNCS, commandVariables::GENERAL_COMMANDS, command))
+			if (!contains(commandVariables::TEXT_FUNCS, commandVariables::TEXT_COMMANDS, command) && !contains(commandVariables::GENERAL_FUNCS, commandVariables::GENERAL_COMMANDS, command))
 			{
 				std::cout << "Unavaliable command in the current mode - " << mode << std::endl;
 				continue;
@@ -64,7 +170,7 @@ int main()
 			//search
 			else if (command == "search")
 			{
-				
+
 				if (size == 1)
 				{
 					throw std::invalid_argument("Please enter a text to search.");
@@ -156,7 +262,7 @@ int main()
 					}
 					else
 					{
-						std::cout<< "Successfully opened the topic: " << currentTopic->getTitle() << std::endl;
+						std::cout << "Successfully opened the topic: " << currentTopic->getTitle() << std::endl;
 					}
 				}
 			}
@@ -209,7 +315,7 @@ int main()
 				char buffDesc[1024];
 				std::cin.getline(buffDesc, 1024);
 				desc = buffDesc;
-;
+				;
 				currentTopic->post(title, desc);
 
 			}
@@ -221,7 +327,7 @@ int main()
 					continue;
 					//throw std::length_error("Command [p_open] requires id or title.");
 				}
-					
+
 
 				if (size == 2 && isPositiveNumber(v[1]))
 				{
@@ -246,7 +352,7 @@ int main()
 					}
 					else
 					{
-						std::cout<< "Successfully opened the post." << std::endl;
+						std::cout << "Successfully opened the post." << std::endl;
 					}
 				}
 				else
@@ -288,6 +394,7 @@ int main()
 				std::cout << "Successfully exited the topic." << std::endl;
 			}
 		}
+
 		else if (mode == "post")
 		{
 			if (!contains(commandVariables::POST_FUNCS, commandVariables::POST_COMMNADS, command))
@@ -320,18 +427,84 @@ int main()
 				currentPost->showComments();
 			}
 
-			else if (command == "reply")
+			//reply
+			else if (command == "reply") //-----------------
 			{
-
+				//posle
 			}
+
 			//p_close
-			else
+			else if (command == "p_close")
 			{
 				if (size != 1)
 					throw std::invalid_argument("Do not add anything after the comment command.");
 
 				mode = "topic";
 				std::cout << "Successfully exited the post." << std::endl;
+			}
+
+			//upvote & downvote
+			else
+			{
+				if (size != 2)
+					throw std::invalid_argument("Upvote command takes only id.");
+
+				if (!isPositiveNumber(v[1]))
+					throw std::invalid_argument("Id is not a positive number");
+
+				unsigned idToVote = v[1].toUnsigned();
+
+				try
+				{
+					currentComment = &currentPost->getCommentById(idToVote);
+				}
+				catch (const std::invalid_argument& ex)
+				{
+					std::cout << ex.what() << std::endl;
+					continue;
+				}
+				unsigned userId = currentUser->getId();
+
+				//upvote
+				if (command == "upvote")
+				{
+					if (currentComment->hasBeenDislikedBy(userId))
+					{
+						currentComment->removeUserIdFromDisliked(userId);
+						currentUser->removePoint();
+					}
+
+					if (currentComment->hasBeenLikedBy(userId))
+					{
+						currentComment->removeUserIdFromLiked(userId);
+						currentUser->removePoint();
+					}
+					else
+					{
+						currentComment->addUserIdToLiked(userId);
+						currentUser->addPoint();
+					}
+				}
+				//downvote
+				else
+				{
+					if (currentComment->hasBeenLikedBy(userId))
+					{
+						currentComment->removeUserIdFromLiked(userId);
+						currentUser->removePoint();
+					}
+
+					if (currentComment->hasBeenDislikedBy(userId))
+					{
+						currentComment->removeUserIdFromDisliked(userId);
+						currentUser->removePoint();
+					}
+					else
+					{
+						currentComment->addUserIdToDisliked(userId);
+						currentUser->addPoint();
+					}
+				}
 			}
 		}
 	}

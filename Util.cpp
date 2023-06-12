@@ -1,7 +1,7 @@
 #include "Util.h"
 
 
-bool contains(const MyString* arr, const int size, const MyString el)
+bool contains(const MyString* arr, const unsigned size, const MyString el)
 {
 	for (size_t i = 0; i < size; i++)
 	{
@@ -62,4 +62,11 @@ void addText(MyString& str, Vector<MyString>& vec, size_t size)
 		if (i != size - 1)
 			str += " "; // make it work even if there are a few spaces in the original title(meaning - make another func that transforms the original title in this format
 	}
+}
+
+void readWord(MyString& word)
+{
+	char buff[1024];
+	std::cin.getline(buff, 1024);
+	word = buff;
 }

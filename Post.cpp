@@ -32,6 +32,20 @@ bool operator==(const Post& lhs, const Post& rhs)
 	return lhs.getTitle() == rhs.getTitle() && lhs.getDesc() == rhs.getDesc(); //without id in order to prevent spam from different accs.
 }
 
+Comment& Post::getCommentById(const unsigned commentId)
+{
+	size_t commentsSize = comments.getSize();
+
+	if (commentId >= commentsSize)
+		throw std::invalid_argument("Id is not valid");
+
+	for (size_t i = 0; i < commentsSize; i++)
+	{
+		if (comments[i].getId() == commentId)
+			return comments[i];
+	}
+}
+
 void Post::print()
 {
 	std::cout << "Title is: " << title << std::endl

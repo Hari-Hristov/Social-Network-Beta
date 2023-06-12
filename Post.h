@@ -19,6 +19,7 @@ class Post
 		void comment(const MyString& authorName, const MyString& text);
 		void showComments();
 
+		Comment& getCommentById(const unsigned commentId);
 		void print();
 };
 
