@@ -54,7 +54,21 @@ bool isPositiveNumber(const MyString& str)
 	return true;
 }
 
-void addText(MyString& str, Vector<MyString>& vec, size_t size)
+unsigned toUnsigned(const MyString& str)
+{
+	if (!isPositiveNumber(str))
+		throw std::invalid_argument("String cannot be converted to a positive number.");
+
+	unsigned result = 0;
+	for (size_t i = 0; i < str.length(); i++)
+	{
+		result = 10 * result + (str.c_str()[i] - '0');
+	}
+
+	return result;
+}
+
+void addText(MyString& str, const Vector<MyString>& vec, size_t size)
 {
 	for (size_t i = 1; i < size; i++)
 	{
