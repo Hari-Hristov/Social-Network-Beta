@@ -20,7 +20,7 @@ namespace commandVariables
 	const unsigned TEXT_COMMANDS = 1;
 	const unsigned GENERAL_COMMANDS = 3;
 	const unsigned TOPIC_COMMANDS = 4;
-	const unsigned POST_COMMNADS = 6;
+	const unsigned POST_COMMNADS = 7;
 
 	static const MyString MODES[MODES_COUNT] =
 	{
@@ -46,6 +46,6 @@ namespace commandVariables
 	};
 
 	static const MyString POST_FUNCS[POST_COMMNADS] = {
-		"comment", "comments", "reply", "upvote", "downvote", "p_close"
+		"comment", "comments", "reply", "replies", "upvote", "downvote", "p_close"
 	};
 }

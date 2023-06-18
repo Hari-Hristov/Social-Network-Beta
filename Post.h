@@ -9,22 +9,23 @@ class Post
 	unsigned commentId = 0;
 	Vector<Comment> comments;
 
-	public:
-		Post() = default;
-		Post(const MyString& title, const MyString& desc, const unsigned id);
-		
-		const MyString& getTitle() const;
-		const MyString& getDesc() const;
-		unsigned getId() const;
-		void comment(const MyString& authorName, const MyString& text);
-		void showComments();
+public:
+	Post() = default;
+	Post(const MyString& title, const MyString& desc, const unsigned id);
 
-		Comment& getCommentById(const unsigned commentId);
+	const MyString& getTitle() const;
+	const MyString& getDesc() const;
+	unsigned getId() const;
 
-		void saveToFile(std::ofstream& ofs);
-		void loadFromFile(std::ifstream& ifs);
+	void comment(const MyString& authorName, const MyString& text);
+	void showComments();
 
-		void print();
+	Comment& getCommentById(const unsigned commentId);
+
+	void saveToFile(std::ofstream& ofs);
+	void loadFromFile(std::ifstream& ifs);
+
+	void print();
 };
 
 bool operator==(const Post& lhs, const Post& rhs);

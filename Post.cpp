@@ -8,7 +8,6 @@ Post::Post(const MyString& title, const MyString& desc, const unsigned id)
 
 void Post::comment(const MyString& authorName, const MyString& text)
 {
-	
 	comments.pushBack(Comment(authorName, text, commentId++));
 };
 

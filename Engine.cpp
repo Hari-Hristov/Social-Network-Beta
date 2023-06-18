@@ -136,7 +136,6 @@ void Engine::run()
 					readWord(desc);
 
 					currentTopic->post(title, desc);
-
 				}
 
 				//p_open
@@ -175,6 +174,7 @@ void Engine::run()
 					readWord(text);
 
 					currentPost->comment(currentUser->getFirstName(), text);
+					currentUser->addPoint();
 				}
 
 				//comments
@@ -189,9 +189,33 @@ void Engine::run()
 				//reply
 				else if (command == "reply") //-----------------
 				{
-					std::cout << "TBI" << std::endl;
+					if (size != 2)
+						throw std::length_error("Reply requires an id.");
+
+					if (!isPositiveNumber(v[1]))
+						throw std::logic_error("Reply id must be an unsigned value.");
+
+					unsigned commentId = toUnsigned(v[1]);
+					currentComment = &currentPost->getCommentById(commentId);
+					MyString reply = "";
+					std::cout << "Type your reply: ";
+					readWord(reply);
+
+					currentComment->reply(reply);
 				}
 
+				else if (command == "replies")
+				{
+					if (size != 2)
+						throw std::length_error("Replies requires an id.");
+
+					if (!isPositiveNumber(v[1]))
+						throw std::logic_error("Reply id must be an unsigned value.");
+
+					unsigned commentId = toUnsigned(v[1]);
+					currentComment = &currentPost->getCommentById(commentId);
+					currentComment->showReplies();
+				}
 				//p_close
 				else if (command == "p_close")
 				{
