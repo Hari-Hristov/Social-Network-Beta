@@ -1,4 +1,5 @@
 #pragma once
+#include <fstream>
 #include "Vector.hpp"
 #include "MyString.h"
 
@@ -15,6 +16,10 @@ class Comment
 
 	void addPoint();
 	void removePoint();
+
+	void saveVectorOfUnsignedToFile(std::ofstream& ofs, const Vector<unsigned>& vector);
+	void loadVectorOfUnsignedFromFile(std::ifstream& ifs, Vector<unsigned>& vector);
+
 	public:
 		Comment() = default;
 		Comment(const MyString& authorName, const MyString& text, const unsigned id);
@@ -29,6 +34,9 @@ class Comment
 		bool hasBeenDislikedBy(unsigned userId);
 		void addUserIdToDisliked(unsigned userId);
 		void removeUserIdFromDisliked(unsigned userId);
+
+		void saveToFile(std::ofstream& ofs);
+		void loadFromFile(std::ifstream& ifs);
 
 		void print();
 };

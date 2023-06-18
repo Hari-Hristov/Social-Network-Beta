@@ -7,6 +7,11 @@
 #include "OpenTopic.h"
 #include "OpenPost.h"
 #include "VoteComment/VoteCommentFactory.h"
+#include "DataManager.h"
+#include <fstream>
+
+const MyString USERS_FILE_PATH = "users.txt";
+const MyString TOPICS_FILE_PATH = "topics.txt";
 
 namespace commandVariables
 {
@@ -37,7 +42,7 @@ namespace commandVariables
 		"open", "about", "create"
 	};
 	static const MyString TOPIC_FUNCS[TOPIC_COMMANDS] = {
-		"post", "p_open", "quit"
+		"post", "posts", "p_open", "quit"
 	};
 
 	static const MyString POST_FUNCS[POST_COMMNADS] = {

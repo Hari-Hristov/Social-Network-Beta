@@ -28,7 +28,7 @@ void OpenPost::execute(Post*& currentPost, Topic*& currentTopic, MyString& mode,
 		if (!found)
 			throw std::invalid_argument("There is no post found with this id.");
 
-		std::cout << "Successfully opened the post." << std::endl;
+		std::cout << "Successfully opened the post: " << currentPost->getTitle() << std::endl;
 	}
 	else
 	{

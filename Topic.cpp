@@ -1,4 +1,5 @@
 #include "Topic.h"
+#include "Util.h"
 
 unsigned Topic::idCounter = 0;
 
@@ -45,8 +46,8 @@ void Topic::list()
 {
 	for (int i = 0; i < posts.getSize(); i++)
 	{
-		std::cout << "\t> " << posts[i].getTitle() 
-				  << " { " << posts[i].getId() << " }" << std:: endl;
+		std::cout << "\t> " << "Title: " << posts[i].getTitle()
+				  << " with id: " << posts[i].getId() << std:: endl;
 	}
 }
 
@@ -60,6 +61,41 @@ void Topic::print()
 	for (size_t i = 0; i < posts.getSize(); i++)
 	{
 		posts[i].print();
+	}
+}
+
+void Topic::saveToFile(std::ofstream& ofs)
+{
+	// static idCounter - dont forget to add later
+	title.saveToFile(ofs);
+	authorName.saveToFile(ofs);
+	description.saveToFile(ofs);
+	ofs.write((const char*)&id, sizeof(id));
+	ofs.write((const char*)&postId, sizeof(postId));
+	
+	size_t postsSize = posts.getSize();
+	ofs.write((const char*)&postsSize, sizeof(postsSize));
+	for (size_t i = 0; i < postsSize; i++)
+	{
+		posts[i].saveToFile(ofs);
+	}
+}
+
+void Topic::loadFromFile(std::ifstream& ifs)
+{
+	title.loadFromFile(ifs);
+	authorName.loadFromFile(ifs);
+	description.loadFromFile(ifs);
+	ifs.read((char*)&id, sizeof(id));
+	ifs.read((char*)&postId, sizeof(postId));
+
+	size_t size = 0;
+	ifs.read((char*)&size, sizeof(size));
+	for (size_t i = 0; i < size; i++)
+	{
+		Post postToAdd;
+		postToAdd.loadFromFile(ifs);
+		posts.pushBack(postToAdd);
 	}
 }
 

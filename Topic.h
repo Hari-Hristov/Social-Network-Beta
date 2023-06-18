@@ -17,13 +17,17 @@ class Topic
 		Topic() = default;
 		Topic(const MyString& title, const MyString& authorName, const MyString &description); 
 
+		const MyString& getTitle() const;
+		unsigned getId() const;
+
 		Vector<Post> posts;
 		void post(const MyString& title, const MyString& desc);
 		void list();
 		bool containsTextInTitle(const MyString& text);
-		void print();
+		
+		void saveToFile(std::ofstream& ofs);
+		void loadFromFile(std::ifstream& ifs);
 
-		const MyString& getTitle() const;
-		unsigned getId() const;
+		void print();
 };
 

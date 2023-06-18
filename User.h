@@ -28,4 +28,7 @@ class User
 		void givePoints(int amount);
 
 		bool operator==(const User& user);
+
+		void saveToFile(std::ofstream& ofs) const;
+		void loadFromFile(std::ifstream& ifs);
 };
