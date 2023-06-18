@@ -8,7 +8,8 @@ void Comment::print()
 {
 	std::cout << "User name is: " << authorName << std::endl
 		<< "Comments writes: " << text << std::endl
-		<< "With id: " << id << std::endl;
+		<< "With id: " << id << std::endl
+		<< "And it has " << points << " points." << std::endl;
 }
 
 void Comment::reply(const MyString& reply)
@@ -99,12 +100,12 @@ bool Comment::hasBeenDislikedBy(unsigned userId)
 void Comment::addUserIdToDisliked(unsigned userId)
 {
 	addUserIdToVoted(userId, dislikedByIds);
-	addPoint();
+	removePoint();
 }
 void Comment::removeUserIdFromDisliked(unsigned userId)
 {
 	removeUserIdFromVoted(userId, dislikedByIds);
-	removePoint();
+	addPoint();
 }
 
 void Comment::saveToFile(std::ofstream& ofs)
