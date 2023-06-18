@@ -11,6 +11,20 @@ void Comment::print()
 		<< "With id: " << id << std::endl;
 }
 
+void Comment::reply(const MyString& reply)
+{
+	replies.pushBack(reply);
+}
+
+void Comment::showReplies() const
+{
+	size_t repliesSize = replies.getSize();
+	for (size_t i = 0; i < repliesSize; i++)
+	{
+		std::cout << replies[i] << std::endl;
+	}
+}
+
 void Comment::addPoint()
 {
 	points++;
@@ -93,7 +107,7 @@ void Comment::removeUserIdFromDisliked(unsigned userId)
 	removePoint();
 }
 
-void Comment::saveToFile(std::ofstream &ofs)
+void Comment::saveToFile(std::ofstream& ofs)
 {
 	authorName.saveToFile(ofs);
 	text.saveToFile(ofs);
@@ -101,10 +115,15 @@ void Comment::saveToFile(std::ofstream &ofs)
 	ofs.write((const char*)&points, sizeof(points));
 
 	// make the vectors from sharedPtrs of the wanted type because now i am saving bytes in the file that are empty and have no information in them
-	// 
-	//saveVectorOfUnsignedToFile(ofs, votedByIds);
 	saveVectorOfUnsignedToFile(ofs, likedByIds);
 	saveVectorOfUnsignedToFile(ofs, dislikedByIds);
+
+	size_t size = replies.getSize();
+	ofs.write((const char*)&size, sizeof(size));
+	for (size_t i = 0; i < size; i++)
+	{
+		replies[i].saveToFile(ofs);
+	}
 }
 
 void Comment::saveVectorOfUnsignedToFile(std::ofstream& ofs, const Vector<unsigned>& vector)
@@ -124,9 +143,17 @@ void Comment::loadFromFile(std::ifstream& ifs)
 	ifs.read((char*)&id, sizeof(id));
 	ifs.read((char*)&points, sizeof(points));
 
-	//loadVectorOfUnsignedFromFile(ifs, votedByIds);
 	loadVectorOfUnsignedFromFile(ifs, likedByIds);
 	loadVectorOfUnsignedFromFile(ifs, dislikedByIds);
+
+	size_t size = 0;
+	ifs.read((char*)&size, sizeof(size));
+	for (size_t i = 0; i < size; i++)
+	{
+		MyString toAdd;
+		toAdd.loadFromFile(ifs);
+		replies.pushBack(toAdd);
+	}
 }
 
 void Comment::loadVectorOfUnsignedFromFile(std::ifstream& ifs, Vector<unsigned>& vector)
@@ -135,7 +162,7 @@ void Comment::loadVectorOfUnsignedFromFile(std::ifstream& ifs, Vector<unsigned>&
 	ifs.read((char*)&size, sizeof(size));
 	for (size_t i = 0; i < size; i++)
 	{
-		unsigned toAdd;
+		unsigned toAdd = 0;
 		ifs.read((char*)&toAdd, sizeof(toAdd));
 		vector.pushBack(toAdd);
 	}

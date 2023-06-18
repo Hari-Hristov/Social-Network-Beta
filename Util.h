@@ -1,7 +1,7 @@
 #pragma once
 #include "MyString.h"
 #include "Vector.hpp"
-
+#include "Topic.h"
 
 bool isPositiveNumber(const MyString& str);
 unsigned toUnsigned(const MyString& str);
