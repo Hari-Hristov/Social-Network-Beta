@@ -1,5 +1,5 @@
 #include "Util.h"
-
+#include <fstream>
 
 bool contains(const MyString* arr, const unsigned size, const MyString el)
 {
@@ -83,4 +83,9 @@ void readWord(MyString& word)
 	char buff[1024];
 	std::cin.getline(buff, 1024);
 	word = buff;
+}
+
+void saveWordToFile(std::ofstream& ofs, const MyString& word) // might not use tho check later
+{
+	// lmao
 }

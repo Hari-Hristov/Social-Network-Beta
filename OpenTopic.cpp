@@ -14,7 +14,7 @@ void OpenTopic::execute(Vector<Topic>& topics, Topic*& currentTopic, MyString& m
 		unsigned searchedId = toUnsigned(input[1]);
 		bool found = false;
 
-		for (size_t i = 0; i < size; i++)
+		for (size_t i = 0; i < topics.getSize(); i++)
 		{
 			if (topics[i].getId() == searchedId)
 			{

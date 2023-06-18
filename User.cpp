@@ -1,4 +1,5 @@
 #include "User.h"
+#include <fstream>
 
 unsigned User::idCounter = 0;
 
@@ -41,7 +42,7 @@ bool User::verifyPassword(const MyString& pass) const
 
 void User::whoami() const
 {
-	std::cout << firstName << ", with " << points << " points." << std::endl;
+	std::cout << firstName << ", with " << points << " points and id: " << id << std::endl;
 }
 
 bool User::operator==(const User& user)
@@ -57,4 +58,22 @@ void User::addPoint()
 void User::removePoint()
 {
 	points--;
+}
+
+void User::saveToFile(std::ofstream& ofs) const
+{
+	firstName.saveToFile(ofs);
+	lastName.saveToFile(ofs);
+	password.saveToFile(ofs);
+	ofs.write((const char*)&id, sizeof(id));
+	ofs.write((const char*)&points, sizeof(points));
+}
+
+void User::loadFromFile(std::ifstream& ifs)
+{
+	firstName.loadFromFile(ifs);
+	lastName.loadFromFile(ifs);
+	password.loadFromFile(ifs);
+	ifs.read((char*)&id, sizeof(id));
+	ifs.read((char*)&points, sizeof(points));
 }

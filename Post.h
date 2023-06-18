@@ -20,6 +20,10 @@ class Post
 		void showComments();
 
 		Comment& getCommentById(const unsigned commentId);
+
+		void saveToFile(std::ofstream& ofs);
+		void loadFromFile(std::ifstream& ifs);
+
 		void print();
 };
 

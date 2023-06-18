@@ -92,3 +92,51 @@ void Comment::removeUserIdFromDisliked(unsigned userId)
 	removeUserIdFromVoted(userId, dislikedByIds);
 	removePoint();
 }
+
+void Comment::saveToFile(std::ofstream &ofs)
+{
+	authorName.saveToFile(ofs);
+	text.saveToFile(ofs);
+	ofs.write((const char*)&id, sizeof(id));
+	ofs.write((const char*)&points, sizeof(points));
+
+	// make the vectors from sharedPtrs of the wanted type because now i am saving bytes in the file that are empty and have no information in them
+	// 
+	//saveVectorOfUnsignedToFile(ofs, votedByIds);
+	saveVectorOfUnsignedToFile(ofs, likedByIds);
+	saveVectorOfUnsignedToFile(ofs, dislikedByIds);
+}
+
+void Comment::saveVectorOfUnsignedToFile(std::ofstream& ofs, const Vector<unsigned>& vector)
+{
+	size_t size = vector.getSize();
+	ofs.write((const char*)&size, sizeof(size));
+	for (size_t i = 0; i < size; i++)
+	{
+		ofs.write((const char*)&vector[i], sizeof(vector[i]));
+	}
+}
+
+void Comment::loadFromFile(std::ifstream& ifs)
+{
+	authorName.loadFromFile(ifs);
+	text.loadFromFile(ifs);
+	ifs.read((char*)&id, sizeof(id));
+	ifs.read((char*)&points, sizeof(points));
+
+	//loadVectorOfUnsignedFromFile(ifs, votedByIds);
+	loadVectorOfUnsignedFromFile(ifs, likedByIds);
+	loadVectorOfUnsignedFromFile(ifs, dislikedByIds);
+}
+
+void Comment::loadVectorOfUnsignedFromFile(std::ifstream& ifs, Vector<unsigned>& vector)
+{
+	size_t size = 0;
+	ifs.read((char*)&size, sizeof(size));
+	for (size_t i = 0; i < size; i++)
+	{
+		unsigned toAdd;
+		ifs.read((char*)&toAdd, sizeof(toAdd));
+		vector.pushBack(toAdd);
+	}
+}

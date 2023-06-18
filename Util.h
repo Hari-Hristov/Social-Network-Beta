@@ -9,3 +9,4 @@ bool contains(const MyString* arr, const unsigned size, const MyString el);
 const Vector<MyString> split(const MyString& input, const char separator);
 void addText(MyString& str, const Vector<MyString>& vec, size_t size);
 void readWord(MyString& word);
+void saveWordToFile(std::ofstream& ofs, const MyString& word);

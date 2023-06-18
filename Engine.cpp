@@ -1,7 +1,6 @@
 #pragma once
 #include "Engine.h"
 #include "ConstantsAndIncludes.h"
-#include "Util.h"
 
 Engine& Engine::getInstance()
 {
@@ -14,29 +13,45 @@ void Engine::run()
 	MyString mode = commandVariables::MODES[0]; //general mode
 	MyString input;
 
-	Vector<Topic> topics;
 	Vector<User> users;
-	//users.pushBack(User("Petur", "Petrov", "123"));
+	Vector<Topic> topics;
+
+	try
+	{
+		DataManager::getInstance().loadUsersFromFile(USERS_FILE_PATH, users);
+	}
+	catch (const std::logic_error& ex)
+	{
+		std::cout << ex.what() << std::endl;
+	}
+
+	try
+	{
+		DataManager::getInstance().loadTopicsFromFile(TOPICS_FILE_PATH, topics);
+	}
+	catch (const std::logic_error& ex)
+	{
+		std::cout << ex.what() << std::endl;
+	}
 
 	User* currentUser = nullptr;
 	Topic* currentTopic = nullptr;
 	Post* currentPost = nullptr;
 	Comment* currentComment = nullptr;
 
-	topics.pushBack(Topic("guza mi brat", "petur", "abc"));
-	topics.pushBack(Topic("dupeto mi brat", "petur", "abc"));
-
 	while (true)
 	{
+		std::cout << '>';
+		readWord(input);
+
 		try
 		{
-			std::cout << '>';
-			readWord(input);
-
 			if (input == "exit")
 			{
-				std::cout << "exit-nahme" << std::endl;
-				//save all the current data here
+				DataManager::getInstance().saveUsersToFile(USERS_FILE_PATH, users);
+				DataManager::getInstance().saveTopicsToFile(TOPICS_FILE_PATH, topics);
+
+				std::cout << "Current session successfully saved. Exited the program." << std::endl;
 				return;
 			}
 
@@ -93,40 +108,11 @@ void Engine::run()
 					throw std::invalid_argument("Unavaliable command in general mode.");
 
 				// create, search and about
-				if (command != "open")
-				{
-					//kak da ukaja che currentUser tuk shte e readOnly
-					try
-					{
-						GeneralNavigationFactory::getInstance().getCommand(command)->execute(topics, v, currentUser);
-
-					}
-					catch (const std::bad_cast& ex)
-					{
-						std::cout << ex.what() << std::endl;
-					}
-					catch (const std::invalid_argument& ex)
-					{
-						std::cout << ex.what() << std::endl;
-					}
-				}
-
+				if (command != "open") //kak da ukaja che currentUser tuk shte e readOnly
+					GeneralNavigationFactory::getInstance().getCommand(command)->execute(topics, v, currentUser);
 				//open
 				else
-				{
-					try
-					{
-						OpenTopic::getInstance().execute(topics, currentTopic, mode, v);
-					}
-					catch (const std::out_of_range& ex)
-					{
-						std::cout << ex.what() << std::endl;
-					}
-					catch (const std::invalid_argument& ex)
-					{
-						std::cout << ex.what() << std::endl;
-					}
-				}
+					OpenTopic::getInstance().execute(topics, currentTopic, mode, v);
 			}
 
 			//topic mode
@@ -152,9 +138,15 @@ void Engine::run()
 					currentTopic->post(title, desc);
 
 				}
+
 				//p_open
 				else if (command == "p_open")
 					OpenPost::getInstance().execute(currentPost, currentTopic, mode, v);
+
+				//posts
+				else if (command == "posts")
+					currentTopic->list();
+
 				//quit
 				else
 				{
@@ -180,11 +172,9 @@ void Engine::run()
 
 					MyString text = "";
 					std::cout << "Write what's on your mind: ";
-					char buffText[1024];
-					std::cin.getline(buffText, 1024);
-					text = buffText;
+					readWord(text);
 
-					currentPost->comment("Petur", text);
+					currentPost->comment(currentUser->getFirstName(), text);
 				}
 
 				//comments

@@ -224,3 +224,18 @@ unsigned MyString::toUnsigned()
 
 	return result;
 }
+
+void MyString::saveToFile(std::ofstream& ofs) const
+{
+	ofs.write((const char*)&_length, sizeof(_length));
+	ofs.write((const char*)_data, _length);
+}
+
+void MyString::loadFromFile(std::ifstream& ifs)
+{
+	free();
+	ifs.read((char*)&_length, sizeof(_length));
+	_data = new char[_length + 1] {};
+	ifs.read((char*)_data, _length);
+
+}
