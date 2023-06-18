@@ -32,5 +32,5 @@ void LoginCommand::execute(User*& currentUser, Vector<User>& users, const Vector
 	if (!currentUser)
 		std::cout << "Login was not successfull. There is no such user." << std::endl;
 	else
-		std::cout << "Login was successfull." << std::endl;
+		std::cout << "Login was successfull. Welcome back " << currentUser->getFirstName() <<"!" << std::endl;
 }

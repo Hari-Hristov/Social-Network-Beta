@@ -18,8 +18,6 @@ void RegisterCommand::execute(User*& currentUser, Vector<User>& users, const Vec
 	std::cout << "Enter your password: ";
 	readWord(password);
 
-	User newUser = User(firstName, lastName, password);
-
 	for (size_t i = 0; i < users.getSize(); i++)
 	{
 		if (users[i].getFirstName() == firstName && users[i].getLastName() == lastName)
@@ -28,6 +26,8 @@ void RegisterCommand::execute(User*& currentUser, Vector<User>& users, const Vec
 			return;
 		}
 	}
+
+	User newUser = User(firstName, lastName, password);
 
 	users.pushBack(newUser);
 	currentUser = &users[users.getSize() - 1];
