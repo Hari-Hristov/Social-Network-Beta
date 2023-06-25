@@ -10,3 +10,5 @@ const Vector<MyString> split(const MyString& input, const char separator);
 void addText(MyString& str, const Vector<MyString>& vec, size_t size);
 void readWord(MyString& word);
 void saveWordToFile(std::ofstream& ofs, const MyString& word);
+void displayOption(const MyString* vec, unsigned size);
+void printVector(const MyString* vec, unsigned size);

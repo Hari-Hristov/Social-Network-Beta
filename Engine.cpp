@@ -34,6 +34,9 @@ void Engine::run()
 		std::cout << ex.what() << std::endl;
 	}
 
+	User::setCounter(users.getSize());
+	Topic::setCounter(topics.getSize());
+	unsigned commandCounter = 0;
 	User* currentUser = nullptr;
 	Topic* currentTopic = nullptr;
 	Post* currentPost = nullptr;
@@ -41,8 +44,22 @@ void Engine::run()
 
 	while (true)
 	{
+		if (commandCounter % 5 == 0) // every 4 incorrect commands in a row prints what are the avaliable ones
+		{
+			if (!currentUser)
+				displayOption(commandVariables::USER_FUNCS, commandVariables::USER_COMMANDS);
+			else if (mode == "general")
+				displayOption(commandVariables::GENERAL_FUNCS, commandVariables::GENERAL_COMMANDS);
+			else if (mode == "topic")
+				displayOption(commandVariables::TOPIC_FUNCS, commandVariables::TOPIC_COMMANDS);
+			else
+				displayOption(commandVariables::POST_FUNCS, commandVariables::POST_COMMNADS);
+			commandCounter = 1;
+		} 
+
 		std::cout << '>';
 		readWord(input);
+		commandCounter++;
 
 		try
 		{
@@ -62,7 +79,6 @@ void Engine::run()
 
 			MyString command = v[0];
 			size_t size = v.getSize();
-
 
 			if (!currentUser && command != "login" && command != "register")
 				throw std::invalid_argument("We currently do not support guest users. Please login or register first to continue using the program.");
@@ -96,10 +112,15 @@ void Engine::run()
 
 				//login & register
 				else
+				{
 					UserCommandFactory::getInstance().getCommand(command)->execute(currentUser, users, v);
+					commandCounter = 0;
+				}
 
 				continue;
 			}
+
+			
 
 			//general mode
 			if (mode == "general")
@@ -112,7 +133,10 @@ void Engine::run()
 					GeneralNavigationFactory::getInstance().getCommand(command)->execute(topics, v, currentUser);
 				//open
 				else
+				{
 					OpenTopic::getInstance().execute(topics, currentTopic, mode, v);
+					commandCounter = 0;
+				}
 			}
 
 			//topic mode
@@ -140,7 +164,10 @@ void Engine::run()
 
 				//p_open
 				else if (command == "p_open")
+				{
 					OpenPost::getInstance().execute(currentPost, currentTopic, mode, v);
+					commandCounter = 0;
+				}
 
 				//posts
 				else if (command == "posts")
@@ -153,6 +180,7 @@ void Engine::run()
 						throw std::length_error("Do not add anything after the quit command.");
 
 					mode = "general";
+					commandCounter = 0;
 					std::cout << "Successfully exited the topic." << std::endl;
 				}
 			}
@@ -223,6 +251,7 @@ void Engine::run()
 						throw std::length_error("Do not add anything after the comment command.");
 
 					mode = "topic";
+					commandCounter = 0;
 					std::cout << "Successfully exited the post." << std::endl;
 				}
 

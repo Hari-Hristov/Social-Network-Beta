@@ -10,6 +10,11 @@ User::User(const MyString& firstName, const MyString& lastName, const MyString& 
 	points = 0;
 }
 
+void User::setCounter(size_t n)
+{
+	idCounter = n;
+}
+
 const MyString& User::getFirstName() const
 {
 	return firstName;
@@ -43,11 +48,6 @@ bool User::verifyPassword(const MyString& pass) const
 void User::whoami() const
 {
 	std::cout << firstName << ", with " << points << " points and id: " << id << std::endl;
-}
-
-bool User::operator==(const User& user)
-{
-	return firstName == user.getFirstName() && lastName == user.getLastName() && user.verifyPassword(password);
 }
 
 void User::addPoint()

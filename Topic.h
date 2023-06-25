@@ -20,6 +20,8 @@ class Topic
 		const MyString& getTitle() const;
 		unsigned getId() const;
 
+		static void setCounter(size_t n);
+
 		Vector<Post> posts;
 		void post(const MyString& title, const MyString& desc);
 		void list();
