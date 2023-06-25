@@ -9,6 +9,11 @@ Topic::Topic(const MyString& title, const MyString& creatorName, const MyString&
 	id = idCounter++;
 }
 
+void Topic::setCounter(size_t n)
+{
+	idCounter = n;
+}
+
 unsigned Topic::getId() const
 {
 	return id;

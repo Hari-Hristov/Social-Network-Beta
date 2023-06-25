@@ -1,6 +1,26 @@
 #include "Util.h"
 #include <fstream>
 
+void displayOption(const MyString* vec, unsigned size)
+{
+	std::cout << "Your current avaliable commands are: ";
+
+	printVector(vec, size);
+}
+
+void printVector(const MyString* vec, unsigned size)
+{
+	for (size_t i = 0; i < size; i++)
+	{
+		if (i == size - 1)
+		{
+			std::cout << vec[i] << std::endl;
+			break;
+		}
+		std::cout << vec[i] << ", ";
+	}
+}
+
 bool contains(const MyString* arr, const unsigned size, const MyString el)
 {
 	for (size_t i = 0; i < size; i++)

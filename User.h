@@ -21,13 +21,13 @@ class User
 		unsigned getId() const;
 		void whoami() const;
 
+		static void setCounter(size_t n);
+
 		bool verifyPassword(const MyString& pass) const;
 		
 		void addPoint();
 		void removePoint();
 		void givePoints(int amount);
-
-		bool operator==(const User& user);
 
 		void saveToFile(std::ofstream& ofs) const;
 		void loadFromFile(std::ifstream& ifs);
